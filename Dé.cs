@@ -14,6 +14,7 @@ namespace Boggle
         public Dé(string fichier)
         {
             faces = new List<char>();
+            Random r = new Random();
             try
             {
                 string[] ligne = File.ReadAllLines(fichier); // Ca ca lit le fichier et ca donne quoi comme info?
@@ -25,10 +26,24 @@ namespace Boggle
                         faces.Add(composants[0][0]); 
                     }
                 }
+                List<char> facesAleatoires = new List<char>();
+                while (facesAleatoires.Count < 6)
+                {
+                    int indexAleatoire = r.Next(faces.Count); 
+                    char lettreTiree = faces[indexAleatoire];
+
+                    if (!facesAleatoires.Contains(lettreTiree))
+                    {
+                        facesAleatoires.Add(lettreTiree);
+                    }
+                }
+
+                faces = facesAleatoires;
                 if (faces.Count != 6)
                 {
                     Console.WriteLine("Le fichier doit contenir exactement 6 lettres");
                 }
+
             }
             catch (FileNotFoundException f) 
             {
