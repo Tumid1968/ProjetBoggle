@@ -20,25 +20,25 @@ namespace Boggle
                 string[] ligne = File.ReadAllLines(fichier); // Ca ca lit le fichier et ca donne quoi comme info?
                 foreach (string l in ligne)
                 {
-                    string[] composants = l.Split(';');
-                    if (composants.Length > 0 && composants[0].Length>0)
+                    string[] compo = l.Split(';');
+                    if (compo.Length > 0 && compo[0].Length>0)
                     {
-                        faces.Add(composants[0][0]); 
+                        faces.Add(compo[0][0]); 
                     }
                 }
-                List<char> facesAleatoires = new List<char>();
-                while (facesAleatoires.Count < 6)
+                List<char> fA = new List<char>();
+                while (fA.Count < 6)
                 {
-                    int indexAleatoire = r.Next(faces.Count); 
-                    char lettreTiree = faces[indexAleatoire];
+                    int i = r.Next(faces.Count); 
+                    char lettrePrise = faces[i];
 
-                    if (!facesAleatoires.Contains(lettreTiree))
+                    if (!fA.Contains(lettrePrise))
                     {
-                        facesAleatoires.Add(lettreTiree);
+                        fA.Add(lettrePrise);
                     }
                 }
 
-                faces = facesAleatoires;
+                faces = fA;
                 if (faces.Count != 6)
                 {
                     Console.WriteLine("Le fichier doit contenir exactement 6 lettres");
