@@ -10,10 +10,12 @@ namespace Boggle
     internal class Dé
     {
         private List<char> faces;
+        private List<(char let, int NbreDeFois)> lettreNombre;
         private char faceVisible;
         public Dé(string fichier)
         {
             faces = new List<char>();
+            lettreNombre = new List<(char let, int NbreDeFois)>();
             Random r = new Random();
             try
             {
@@ -21,20 +23,28 @@ namespace Boggle
                 foreach (string l in ligne)
                 {
                     string[] compo = l.Split(';');
-                    if (compo.Length > 0 && compo[0].Length>0)
+                    if (compo.Length==3)
                     {
-                        faces.Add(compo[0][0]); 
+                        char le = compo[0][0];
+                        int NbreDeFois = int.Parse(compo[2]);
+                        lettreNombre.Add((le, NbreDeFois));
                     }
                 }
                 List<char> fA = new List<char>();
-                while (fA.Count < 6)
+                while (fA.Count < 6 && lettreNombre.Count>0)
                 {
-                    int i = r.Next(faces.Count); 
-                    char lettrePrise = faces[i];
+                    int i = r.Next(lettreNombre.Count); 
+                    var (lettrePr, Restants) = lettreNombre[i];
 
-                    if (!fA.Contains(lettrePrise))
+
+                    if (Restants > 0)
                     {
-                        fA.Add(lettrePrise);
+                        fA.Add(lettrePr);
+                        lettreNombre[i] = (lettrePr, Restants - 1);
+                        if (lettreNombre[i].NbreDeFois ==0)
+                        {
+                            lettreNombre.RemoveAt(i);
+                        }
                     }
                 }
 
@@ -60,6 +70,16 @@ namespace Boggle
             get { return faceVisible; }
 
         }
+        public List<char> Faces
+        {
+            get { return faces; }
+            set { faces = value; }
+        }
+        public List<(char let, int NbreDeFois)> LettreNombre
+        {
+            get { return lettreNombre; }
+            set { lettreNombre = value; }   
+        }
 
         public void Lance (Random r)
         {
@@ -67,7 +87,7 @@ namespace Boggle
             {
                 int LettreAleat = r.Next(0, faces.Count);
                 faceVisible = faces[LettreAleat];
-                
+
             }
             else
             {
