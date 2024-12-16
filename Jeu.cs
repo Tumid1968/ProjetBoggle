@@ -21,7 +21,7 @@ namespace Projet_Boggle
             this.dictionnaire = null;
             this.joueurs = new List<Joueur>();
             this.plateau = null;
-            this.durée_partie = 2;
+            this.durée_partie = 6;
             this.duree_tour = 60;
             this.lettre = new List<char>();
             this.scores = new List<int>();
@@ -166,22 +166,7 @@ namespace Projet_Boggle
             return score;
                 
         }
-        private void GenererNuagePourJoueurs()
-        {
-            foreach (Joueur joueur in joueurs)
-            {
-                Console.WriteLine($"Génération du nuage de mots pour {joueur.Nom}...");
-
-                // Créer un dictionnaire mot -> score
-                Dictionary<string, int> motsScores = joueur.Mots_Trouves
-                    .ToDictionary(mot => mot, mot => calculer_score_mot(mot));
-
-                // Générer le nuage de mots
-                string cheminFichier = $"{joueur.Nom}_NuageDeMots.png";
-                NuageDeMots nuage = new NuageDeMots(joueur.Mots_Trouves, motsScores);
-                nuage.GenererNuage(cheminFichier);
-            }
-        }
+        
 
         private void Fin_de_partie()
         {
@@ -194,10 +179,12 @@ namespace Projet_Boggle
             }
             Joueur Le_joueur_gagnant = calculer_le_gagnant();
             Console.WriteLine("Le gagnant de cette partie est "+Le_joueur_gagnant.Nom+" avec "+Le_joueur_gagnant.Score+" points.");
-            GenererNuagePourJoueurs();
+            NuageDeMots nuage = new NuageDeMots(800, 600);
+            nuage.generer_nuage(Le_joueur_gagnant, "nuage_gagnant.png");
+            Console.WriteLine("Nuage de mots généré pour le joueur gagnant : " + Le_joueur_gagnant.Nom);
 
         }
-        private Joueur calculer_le_gagnant()
+        public Joueur calculer_le_gagnant()
         {
             Joueur le_joueur_gagnant = joueurs[0];
             for(int i = 1; i < joueurs.Count; i++)
