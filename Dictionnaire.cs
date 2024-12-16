@@ -211,6 +211,76 @@ namespace Projet_Boggle
             mot = mot.ToUpper();
             return RechDichoRecursifEn(mot.ToUpper(), 0, dictionnaireEn.Count - 1);
         }
+        public List<string> Tri_par_quickSort(List<string> liste)
+        {
+            if (liste.Count <= 1)
+                return liste; // Rien à trier
+
+            string pivot = liste[liste.Count / 2];
+
+            List<string> moins = new List<string>();
+            List<string> egaux = new List<string>();
+            List<string> plus = new List<string>();
+
+            foreach (string element in liste)
+            {
+                if (string.Compare(element, pivot) < 0)
+                {
+                    moins.Add(element);
+                }
+                else if (string.Compare(element, pivot) == 0)
+                {
+                    egaux.Add(element);
+                }
+                else
+                {
+                    plus.Add(element);
+                }
+            }
+
+            List<string> resultat = new List<string>();
+            resultat.AddRange(Tri_par_quickSort(moins));
+            resultat.AddRange(egaux);
+            resultat.AddRange(Tri_par_quickSort(plus));
+
+            return resultat;
+        }
+        public List<string> TriParInsertion(string langue)
+        {
+            List<string> resultat = new List<string>();
+
+            if (langue.ToUpper() == "FRANCAIS")
+            {
+                resultat = new List<string>(dictionnaireFr); 
+            }
+            else if (langue.ToUpper() == "ANGLAIS")
+            {
+                resultat = new List<string>(dictionnaireEn); 
+            }
+            else
+            {
+                Console.WriteLine("Langue non reconnue. Choisissez 'FRANCAIS' ou 'ANGLAIS'.");
+                return resultat; 
+            }
+
+            for (int i = 1; i < resultat.Count; i++)
+            {
+                string current = resultat[i];
+                int j = i - 1;
+
+                while (j >= 0 && string.Compare(resultat[j], current) > 0)
+                {
+                    resultat[j + 1] = resultat[j];
+                    j--;
+                }
+
+                resultat[j + 1] = current;
+            }
+
+            return resultat;
+        }
+
+
 
 
         public string toString()
