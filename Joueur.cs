@@ -4,47 +4,48 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Boggle
+namespace Projet_Boggle
 {
     internal class Joueur
     {
         private string nom;
-        private long score;
-        private List<string> mots;
-        public Joueur(string n,long s,string[] m)
+        private int score;
+        private List<string> mots_Trouves;
+        public Joueur(string n, int s, List<string> m)
         {
             this.nom = n;
             this.score = s;
-            this.mots = new List<string>();
+            this.mots_Trouves = m;
         }
         public string Nom
         {
             get { return nom; }
         }
-        public long Score
+        public int Score
         {
             get { return score; }
             set { score = value; }
         }
-        
-        public bool Contain(string mot )
+        public List<string> Mots_Trouves
         {
-            return mots.Contains( mot );
+            get { return mots_Trouves; }
+            set { mots_Trouves = value; }
+        }
+        public bool Contain(string mot) {
+            return Mots_Trouves.Contains(mot.ToUpper());  
         }
         public void Add_Mot(string mot)
         {
-            if (!Contain(mot))
+            if(!Contain(mot))
             {
-                mots.Add( mot);
+                Mots_Trouves.Add(mot);
             }
-            
         }
         public string toString()
         {
-            string res = "Le nom est "+Nom+" et le score est "+Score+" et les mots trouvés sont "+string.Join(", ", mots);
-            return res;
+            string joueur_résultat = "le score de "+Nom+" est de "+Score+" grâce aux mots cités suivants"+string.Join(" ",Mots_Trouves);
+            return joueur_résultat;
         }
-
 
     }
 }
