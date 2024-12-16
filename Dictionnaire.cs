@@ -1,80 +1,236 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Boggle
+namespace Projet_Boggle
 {
     internal class Dictionnaire
     {
-        private List<string> mots;
+        private List<string> dictionnaireFr;
+        private List<string> dictionnaireEn;
         private string langue;
-        public Dictionnaire(string fichier, string langue)
+        public Dictionnaire (string l)
         {
-            this.langue = langue;
-            mots = new List<string>();
-            try
+            this.langue = l;
+            this.dictionnaireFr = new List<string> ();
+            this.dictionnaireEn = new List<string>();
+            StreamReader sReader = null;
+            if (langue == "FRANCAIS")
             {
-                string[] lignes = File.ReadAllLines(fichier);
-                foreach (string c in lignes)
+                try
                 {
-                    string[] motsL = c.Split(' ');
-                    foreach(string s in motsL)
+                    sReader = new StreamReader("Mots_PossiblesFR.txt");
+                    string line;
+                    while ((line = sReader.ReadLine()) != null)
                     {
-                        mots.Add(s.ToLower());
+                        string[] l1 = line.Split(' ');
+                        foreach (string l2 in l1)
+                        {
+                            dictionnaireFr.Add(l2.Trim().ToUpper());
+                        }
+                    }
+
+                    dictionnaireFr = tri_fusion(dictionnaireFr);
+                }
+                catch (IOException f)
+                {
+                    Console.WriteLine("Le fichier n'existe pas");
+                    Console.WriteLine(f.Message);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                finally
+                {
+                    if (sReader != null)
+                    {
+                        sReader.Close();
                     }
                 }
-                mots.Sort();
             }
-        
+            else if(langue =="ANGLAIS")
+            {
+                try
+                {
+                    sReader = new StreamReader("Mots_PossiblesEn.txt");
+                    string k;
+                    while ((k = sReader.ReadLine()) != null)
+                    {
+                        string[] l1 = k.Split(' ');
+                        foreach (string l2 in l1)
+                        {
+                            dictionnaireEn.Add(l2.Trim().ToUpper());
+                        }
+                    }
 
-            catch(FileNotFoundException f)
-            {
-                Console.WriteLine("Fichier Introuvable"+f.Message);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Erreur" + e.Message);
+                    dictionnaireEn = tri_fusion(dictionnaireEn);
+                }
+                catch (IOException f)
+                {
+                    Console.WriteLine("Le fichier n'existe pas");
+                    Console.WriteLine(f.Message);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                finally
+                {
+                    if (sReader != null)
+                    {
+                        sReader.Close();
+                    }
+                }
             }
             
-            
         }
-        public string toString()
+        public string Langue
         {
-            string result = "Dictionnaire en " + langue + ":\n";
-            result = result + "Nombre de mots : " + mots.Count + "\n";
-            return result;
+            get { return langue; }
+            set { langue = value; }
         }
-        public bool RechDichoRecursif(string mot, int d, int f)
+
+        public List<string> tri_fusion(List<string> l) {
+            if (l.Count <= 1)
+            {
+                return l;
+            }
+            int mid = l.Count / 2;
+            List<string> partie_gauche= new List<string>(); 
+            List<string> partie_droite= new List<string>();
+            for(int i =0; i < l.Count; i++)
+            {
+                if (i < mid)
+                {
+                    partie_gauche.Add(l[i]);
+                }
+                else
+                {
+                    partie_droite.Add(l[i]);
+                }
+            }
+            partie_gauche=tri_fusion(partie_gauche);
+            partie_droite=tri_fusion(partie_droite);
+            return fusion(partie_gauche, partie_droite);
+
+        
+        }
+        private static List<string> fusion(List<string> partie_gauche,List<string> partie_droite)
         {
-            mot = mot.ToLower();
+            List<string> tri_fini=new List<string>();
+            int i_gauche = 0;
+            int i_droite = 0;
+            while(i_droite<partie_droite.Count && i_gauche < partie_gauche.Count)
+            {
+                if (partie_gauche[i_gauche].CompareTo(partie_droite[i_droite])<=0)
+                {
+                    tri_fini.Add(partie_gauche[i_gauche]);
+                    i_gauche++;
+                }
+                else
+                {
+                    tri_fini.Add(partie_droite[i_droite]);
+                    i_droite++;
+                }
+            }
+            while (i_gauche < partie_gauche.Count)
+            {
+                tri_fini.Add(partie_gauche[i_gauche]); 
+                i_gauche++;
+            }
+            while (i_droite < partie_droite.Count)
+            {
+                tri_fini.Add(partie_droite[i_droite]);
+                i_droite++; 
+            }
+            return tri_fini;
+        }
+        public bool RechDichoRecursifFr(string mot, int d, int f)
+        {
+            mot = mot.ToUpper();
             if (d > f)
             {
                 return false;
             }
             int mid = (d + f) / 2;
             
-            int compar = string.Compare(mots[mid], mot);
-            if(compar == 0)
+
+            int compar = string.Compare(dictionnaireFr[mid], mot.ToUpper());
+            if (compar == 0)
             {
                 return true;
             }
-            else if(compar < 0) {
-                return RechDichoRecursif(mot, mid + 1, f);
+            else if (compar < 0)
+            {
+                return RechDichoRecursifFr(mot, mid + 1, f);
 
             }
             else
             {
-                return RechDichoRecursif(mot, d, mid - 1);
+                return RechDichoRecursifFr(mot, d, mid - 1);
             }
-            
+
         }
-        public bool RechDichoRecursif(string mot)
+        public bool RechDichoRecursifFr1(string mot)
         {
-            mot = mot.ToLower();
-            return RechDichoRecursif(mot, 0, mots.Count - 1);
+            mot = mot.ToUpper();
+            return RechDichoRecursifFr(mot.ToUpper(), 0, dictionnaireFr.Count - 1);
         }
+        public bool RechDichoRecursifEn(string mot, int d, int f)
+        {
+            mot = mot.ToUpper();
+            if (d > f)
+            {
+                return false;
+            }
+            int mid = (d + f) / 2;
+
+
+            int compar = string.Compare(dictionnaireEn[mid], mot.ToUpper());
+            if (compar == 0)
+            {
+                return true;
+            }
+            else if (compar < 0)
+            {
+                return RechDichoRecursifEn(mot, mid + 1, f);
+
+            }
+            else
+            {
+                return RechDichoRecursifEn(mot, d, mid - 1);
+            }
+
+        }
+        public bool RechDichoRecursifEn1(string mot)
+        {
+            mot = mot.ToUpper();
+            return RechDichoRecursifEn(mot.ToUpper(), 0, dictionnaireEn.Count - 1);
+        }
+
+
+        public string toString()
+        {
+            string dictionnaire_résultat;
+            if(langue == "FRANCAIS")
+            {
+                dictionnaire_résultat = "Langue: " + Langue + " et le dictionnaire contient " + dictionnaireFr.Count;
+            }
+            else
+            {
+                dictionnaire_résultat = "Langue: " + Langue + " et le dictionnaire contient " + dictionnaireEn.Count;
+
+            }
+            return dictionnaire_résultat;
+        }
+
+
+
+
+
     }
 }
