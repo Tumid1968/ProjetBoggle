@@ -63,9 +63,15 @@ namespace Projet_Boggle
         {
             if (index == mot.Length) return true;
 
-            if (x < 0 || x >= 4 || y < 0 || y >= 4 || case_visitée[x, y]) return false;
+            if (x < 0 || x >= 4 || y < 0 || y >= 4 || case_visitée[x, y]) { 
+                return false;
+            
+            }
+                ;
 
-            if (ensemble_dés[x, y].Face_visible[0] != mot[index]) return false;
+            if (ensemble_dés[x, y].Face_visible[0] != mot[index]) {
+                return false;
+            };
 
             case_visitée[x, y] = true;
 
