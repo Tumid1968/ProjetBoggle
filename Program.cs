@@ -1,73 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Boggle
+namespace Projet_Boggle
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            string Fichier = "lettres.txt"; 
+            
+            
+            Jeu jeu = new Jeu();
+            jeu.Configuration_du_jeu();
+            jeu.démarrer_une_partie();
 
-            try
-            {
-                Console.WriteLine("Création d'un dé :");
-                Dé de = new Dé(Fichier);
-                Console.WriteLine(de.toString());
+            Joueur gagnant = jeu.calculer_le_gagnant();
 
-                Random random = new Random();
+            NuageDeMots nuage = new NuageDeMots(800, 600);
+            nuage.generer_nuage(gagnant, "nuage_gagnant.png");
+            Console.WriteLine("Fin de la partie. Le nuage de mots a été généré pour le joueur gagnant.");
+            /*Jeu jeu = new Jeu();
 
-                Console.WriteLine("Lancement du dé :");
-                de.Lance(random);
-                Console.WriteLine($"Face visible: {de.FaceVisible}");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Erreur pendant l'exécution : {e.Message}");
-            }
+               Console.WriteLine("Configuration du jeu");
+               jeu.Configuration_du_jeu();
 
-            /*Dictionnaire dictionnaireFr = new Dictionnaire("MotsPossiblesFR.txt", "Français");
-
-             Console.Write(dictionnaireFr.toString());
-
-             string mot = "PENIS";
-             if (dictionnaireFr.RechDichoRecursif(mot))
-             {
-
-                 Console.WriteLine("Le mot " + mot.ToUpper() + " est dans le dictionnaire francais.");
-                 Console.WriteLine();
-             }
-             else
-             {
-                 Console.WriteLine("Le mot " + mot.ToUpper() + " n'est pas dans le dictionnaire francais.");
-                 Console.WriteLine() ;
-             }
-
-             Dictionnaire dictionnaireEn = new Dictionnaire("MotsPossiblesEN.txt", "Anglais");
-
-             Console.Write(dictionnaireEn.toString());
-
-             mot = "Khelil";
-             if (dictionnaireEn.RechDichoRecursif(mot))
-             {
-                 Console.WriteLine("Le mot "+ mot.ToUpper() + " est dans le dictionnaire anglais.");
-                 Console.WriteLine();
-             }
-             else
-             {
-                 Console.WriteLine("Le mot " + mot.ToUpper() + " n'est pas dans dictionnaire anglais.");
-                 Console.WriteLine();
-             }
-            */
+               Console.WriteLine("Lancement de la partie !");
+               jeu.démarrer_une_partie();
 
 
-            Console.WriteLine("Appuyez sur une touche pour quitter...");
-            Console.ReadKey();  
 
+               Console.WriteLine("Fin du programme.");*/
+            Console.ReadKey();
+            
         }
     }
 }
